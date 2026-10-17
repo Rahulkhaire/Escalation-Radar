@@ -1,0 +1,10 @@
+.er-dist { list-style: none; margin: 0; padding: 0; }
+.er-dist-row { display: grid; grid-template-columns: 5.5rem 1fr 2.5rem; align-items: center; gap: .5rem; width: 100%; background: none; border: 0; padding: .125rem 0; cursor: pointer; text-align: left; }
+.er-dist-row:focus { outline: 2px solid #0b5cab; outline-offset: 2px; }
+.er-dist-track { display: block; background: #ecebea; height: .75rem; border-radius: .375rem; overflow: hidden; }
+.er-bar { display: block; height: 100%; border-radius: .375rem; }
+.er-bar-critical { background: #ba0517; }
+.er-bar-high { background: #dd7a01; }
+.er-bar-medium { background: #f4c20d; }
+.er-bar-low { background: #2e844a; }
+.er-dist-count { text-align: right; font-weight: 600; }

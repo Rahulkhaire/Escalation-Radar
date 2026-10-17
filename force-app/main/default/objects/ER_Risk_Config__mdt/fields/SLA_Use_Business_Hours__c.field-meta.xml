@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>SLA_Use_Business_Hours__c</fullName>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <description>Applies to the policy-hours fallback only: measure elapsed time against the org default Business Hours.</description>
+    <label>SLA Use Business Hours</label>
+    <defaultValue>false</defaultValue>
+    <type>Checkbox</type>
+</CustomField>

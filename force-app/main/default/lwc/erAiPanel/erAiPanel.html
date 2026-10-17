@@ -1,0 +1,22 @@
+<template>
+    <section class="slds-m-top_medium" aria-labelledby="ai-heading">
+        <h3 id="ai-heading" class="slds-text-heading_small">AI analysis <lightning-badge label="Advisory only" class="slds-m-left_x-small"></lightning-badge></h3>
+        <template if:true={hasAi}>
+            <p class="slds-text-body_small slds-text-color_weak slds-m-bottom_x-small">
+                Provider {detail.aiProvider}. AI text and sentiment are model estimates and can be wrong; they never change the deterministic factors above.
+                AI uplift applied to the score: {upliftText}.
+            </p>
+            <dl class="slds-list_stacked">
+                <dt class="slds-text-title">Summary</dt><dd class="slds-m-bottom_x-small">{detail.aiSummary}</dd>
+                <dt class="slds-text-title">Risk explanation</dt><dd class="slds-m-bottom_x-small">{detail.aiRiskExplanation}</dd>
+                <dt class="slds-text-title">Urgency / sentiment (estimate)</dt><dd class="slds-m-bottom_x-small">{detail.aiUrgency} / {detail.aiSentiment}, confidence {confidenceText}</dd>
+                <dt class="slds-text-title">Potential root-cause categories</dt><dd class="slds-m-bottom_x-small">{detail.aiRootCauses}</dd>
+                <dt class="slds-text-title">Recommended next steps</dt><dd class="slds-m-bottom_x-small er-pre">{detail.aiNextSteps}</dd>
+                <dt class="slds-text-title">Suggested customer update (draft, not sent)</dt><dd class="slds-m-bottom_x-small er-pre">{detail.aiSuggestedUpdate}</dd>
+            </dl>
+        </template>
+        <template if:false={hasAi}>
+            <p class="slds-text-color_weak" role="status">{emptyText}</p>
+        </template>
+    </section>
+</template>

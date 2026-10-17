@@ -1,0 +1,6 @@
+.er-kpi { background: var(--lwc-colorBackgroundAlt, #fff); border-left: 4px solid #0b5cab; min-height: 5rem; }
+.er-kpi-danger { border-left-color: #ba0517; }
+.er-kpi-warn { border-left-color: #dd7a01; }
+.er-kpi-label { color: var(--lwc-colorTextWeak, #444); }
+.er-kpi-value { font-size: 1.75rem; font-weight: 700; line-height: 1.2; }
+.er-kpis { list-style: none; margin: 0; padding: 0; }

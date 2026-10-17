@@ -1,0 +1,19 @@
+{
+  "name": "escalation-radar",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Escalation Radar - Salesforce DX project (Apex, LWC, CDC, Platform Events, AI-assisted case risk)",
+  "scripts": {
+    "check": "python3 scripts/static-check.py",
+    "format:check": "prettier --check \"force-app/**/*.{cls,trigger,js,html,css}\"",
+    "format": "prettier --write \"force-app/**/*.{cls,trigger,js,html,css}\"",
+    "lint": "eslint force-app/main/default/lwc"
+  },
+  "devDependencies": {
+    "@lwc/eslint-plugin-lwc": "^1.8.0",
+    "@salesforce/eslint-config-lwc": "^3.5.0",
+    "eslint": "^8.57.0",
+    "prettier": "^3.2.5",
+    "prettier-plugin-apex": "^2.1.0"
+  }
+}

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Default</label>
+    <protected>false</protected>
+    <values>
+        <field>Version__c</field>
+        <value xsi:type="xsd:string">1.0.0-example</value>
+    </values>
+    <values>
+        <field>Weight_SLA__c</field>
+        <value xsi:type="xsd:double">35</value>
+    </values>
+    <values>
+        <field>Weight_Priority__c</field>
+        <value xsi:type="xsd:double">20</value>
+    </values>
+    <values>
+        <field>Weight_Reopen__c</field>
+        <value xsi:type="xsd:double">15</value>
+    </values>
+    <values>
+        <field>Weight_Account_Tier__c</field>
+        <value xsi:type="xsd:double">15</value>
+    </values>
+    <values>
+        <field>Weight_Age_Comms__c</field>
+        <value xsi:type="xsd:double">15</value>
+    </values>
+    <values>
+        <field>Threshold_Medium__c</field>
+        <value xsi:type="xsd:double">25</value>
+    </values>
+    <values>
+        <field>Threshold_High__c</field>
+        <value xsi:type="xsd:double">50</value>
+    </values>
+    <values>
+        <field>Threshold_Critical__c</field>
+        <value xsi:type="xsd:double">75</value>
+    </values>
+    <values>
+        <field>SLA_Ramp_Start_Pct__c</field>
+        <value xsi:type="xsd:double">50</value>
+    </values>
+    <values>
+        <field>SLA_Hours_High__c</field>
+        <value xsi:type="xsd:double">8</value>
+    </values>
+    <values>
+        <field>SLA_Hours_Medium__c</field>
+        <value xsi:type="xsd:double">24</value>
+    </values>
+    <values>
+        <field>SLA_Hours_Low__c</field>
+        <value xsi:type="xsd:double">72</value>
+    </values>
+    <values>
+        <field>SLA_Use_Business_Hours__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>Age_Cap_Hours__c</field>
+        <value xsi:type="xsd:double">72</value>
+    </values>
+    <values>
+        <field>Stale_Update_Hours__c</field>
+        <value xsi:type="xsd:double">24</value>
+    </values>
+    <values>
+        <field>Reopen_Cap__c</field>
+        <value xsi:type="xsd:double">3</value>
+    </values>
+    <values>
+        <field>Approval_Required_Actions__c</field>
+        <value xsi:type="xsd:string">ESCALATE_CASE</value>
+    </values>
+</CustomMetadata>

@@ -1,0 +1,30 @@
+<template>
+    <article class="slds-card">
+        <div class="slds-card__header slds-grid slds-grid_align-spread">
+            <h2 class="slds-card__header-title slds-text-heading_small">At-risk cases ({total})</h2>
+            <span class="slds-text-body_small slds-text-color_weak">Page {pageNumber} of {totalPages}</span>
+        </div>
+        <div class="slds-card__body slds-card__body_inner er-table-wrap">
+            <template if:true={loading}>
+                <lightning-spinner alternative-text="Loading cases" size="small"></lightning-spinner>
+            </template>
+            <template if:true={isEmpty}>
+                <div class="slds-illustration slds-illustration_small slds-p-around_large slds-text-align_center">
+                    <p class="slds-text-heading_small">No cases match the current filters</p>
+                    <p class="slds-text-color_weak">Adjust or reset filters, or run the initial assessment batch (see the setup guide).</p>
+                </div>
+            </template>
+            <template if:false={isEmpty}>
+                <lightning-datatable key-field="assessmentId" data={displayRows} columns={columns} hide-checkbox-column
+                    sorted-by={sortField} sorted-direction={sortDirection} onsort={handleSort} onrowaction={handleRowAction}
+                    aria-label="At-risk cases"></lightning-datatable>
+            </template>
+        </div>
+        <footer class="slds-card__footer">
+            <lightning-button-group>
+                <lightning-button label="Previous" icon-name="utility:chevronleft" onclick={handlePrev} disabled={isFirst}></lightning-button>
+                <lightning-button label="Next" icon-name="utility:chevronright" icon-position="right" onclick={handleNext} disabled={isLast}></lightning-button>
+            </lightning-button-group>
+        </footer>
+    </article>
+</template>

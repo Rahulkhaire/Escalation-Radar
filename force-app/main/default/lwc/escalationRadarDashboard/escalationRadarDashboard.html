@@ -1,0 +1,66 @@
+<template>
+    <lightning-card title="Escalation Radar" icon-name="standard:case_change_status">
+        <div slot="actions">
+            <lightning-button label="Refresh" icon-name="utility:refresh" onclick={handleRefresh} disabled={loading}></lightning-button>
+        </div>
+        <div class="slds-p-horizontal_medium">
+            <p class="slds-text-body_small slds-text-color_weak slds-m-bottom_small" role="status">
+                <template if:true={lastRefreshedText}>Last refreshed {lastRefreshedText}. </template>
+                <template if:true={liveText}>{liveText}</template>
+            </p>
+            <template if:true={isStale}>
+                <div class="slds-notify slds-notify_alert slds-alert_warning slds-m-bottom_small" role="alert">
+                    <span>Data may be out of date (no refresh for over {staleMinutes} minutes, or the live event connection is down). Select Refresh.</span>
+                </div>
+            </template>
+            <template if:true={errorMessage}>
+                <div class="slds-notify slds-notify_alert slds-alert_error slds-m-bottom_small" role="alert">
+                    <span>{errorMessage}</span>
+                    <lightning-button variant="base" label="Retry" class="slds-m-left_small" onclick={handleRefresh}></lightning-button>
+                </div>
+            </template>
+
+            <c-er-kpi-cards summary={summary}></c-er-kpi-cards>
+
+            <div class="slds-grid slds-wrap slds-gutters_small slds-m-bottom_small">
+                <div class="slds-col slds-size_1-of-1 slds-large-size_4-of-12">
+                    <c-er-risk-distribution distribution={distribution} oncategoryselect={handleCategorySelect}></c-er-risk-distribution>
+                </div>
+                <div class="slds-col slds-size_1-of-1 slds-large-size_8-of-12">
+                    <c-er-health-panel health={health} can-execute={canExecute} onretryfailed={handleRetryFailed}></c-er-health-panel>
+                </div>
+            </div>
+
+            <c-er-filters filters={filters} options={options} onfilterchange={handleFilterChange} onreset={handleReset}></c-er-filters>
+
+            <div class="slds-grid slds-wrap slds-gutters_small slds-m-top_small">
+                <div class={tableColumnClass}>
+                    <c-er-case-table rows={cases.rows} total={cases.total} page-number={cases.pageNumber} page-size={cases.pageSize}
+                        loading={loading} sort-field={filters.sortField} sort-direction={filters.sortDir}
+                        onsortchange={handleSort} onpagechange={handlePage} oncaseselect={handleCaseSelect}></c-er-case-table>
+                </div>
+                <template if:true={hasDetail}>
+                    <div class="slds-col slds-size_1-of-1 slds-large-size_5-of-12">
+                        <c-er-case-detail detail={detail} audit={audit} can-approve={canApprove} can-execute={canExecute}
+                            onclose={handleCloseDetail} onopenrecord={handleOpenRecord} onreassess={handleReassess}
+                            onactionapprove={handleInlineApprove} onactionreject={handleInlineReject} onactionrun={handleInlineRun}></c-er-case-detail>
+                    </div>
+                </template>
+            </div>
+
+            <div class="slds-m-top_small">
+                <c-er-approval-queue actions={approvalQueue} can-approve={canApprove} ondecide={handleDecide} onshowcase={handleShowCase}></c-er-approval-queue>
+            </div>
+            <template if:true={readyToRun.length}>
+                <div class="slds-m-top_small">
+                    <article class="slds-card">
+                        <div class="slds-card__header"><h2 class="slds-card__header-title slds-text-heading_small">Ready to run (no approval needed): {readyToRun.length}</h2></div>
+                        <div class="slds-card__body slds-card__body_inner">
+                            <p class="slds-text-body_small slds-text-color_weak">Open a case and use Run action, or review them there.</p>
+                        </div>
+                    </article>
+                </div>
+            </template>
+        </div>
+    </lightning-card>
+</template>

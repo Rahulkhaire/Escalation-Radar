@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>Published after a risk assessment commits. At-least-once, not exactly-once; consumers must be idempotent.</description>
+    <eventType>HighVolume</eventType>
+    <label>ER Risk Update</label>
+    <pluralLabel>ER Risk Updates</pluralLabel>
+    <publishBehavior>PublishAfterCommit</publishBehavior>
+</CustomObject>

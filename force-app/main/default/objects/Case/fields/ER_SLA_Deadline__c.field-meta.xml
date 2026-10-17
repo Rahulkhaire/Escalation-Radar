@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ER_SLA_Deadline__c</fullName>
+    <description>Supplied SLA resolution deadline. When blank, the risk engine falls back to the SLA policy hours in ER_Risk_Config__mdt.</description>
+    <label>ER SLA Deadline</label>
+    <required>false</required>
+    <type>DateTime</type>
+</CustomField>

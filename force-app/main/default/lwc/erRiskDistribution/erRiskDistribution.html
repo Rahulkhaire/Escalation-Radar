@@ -1,0 +1,21 @@
+<template>
+    <article class="slds-card">
+        <div class="slds-card__header slds-grid">
+            <h2 class="slds-card__header-title slds-text-heading_small">Risk distribution</h2>
+        </div>
+        <div class="slds-card__body slds-card__body_inner">
+            <ul class="er-dist" aria-label="Number of cases per risk category">
+                <template for:each={bars} for:item="b">
+                    <li key={b.category} class="slds-m-bottom_x-small">
+                        <button type="button" class="er-dist-row" data-category={b.category} onclick={handleSelect}
+                            aria-label={b.aria}>
+                            <span class="er-dist-label">{b.category}</span>
+                            <span class="er-dist-track"><span class={b.barClass} style={b.style}></span></span>
+                            <span class="er-dist-count">{b.count}</span>
+                        </button>
+                    </li>
+                </template>
+            </ul>
+        </div>
+    </article>
+</template>

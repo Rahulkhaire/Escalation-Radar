@@ -1,0 +1,29 @@
+<template>
+    <article class="slds-card">
+        <div class="slds-card__header"><h2 class="slds-card__header-title slds-text-heading_small">Processing and integration health</h2></div>
+        <div class="slds-card__body slds-card__body_inner">
+            <template if:true={health}>
+                <dl class="slds-list_horizontal slds-wrap">
+                    <dt class="slds-item_label slds-text-color_weak slds-truncate">AI provider</dt>
+                    <dd class="slds-item_detail">{aiText}</dd>
+                    <dt class="slds-item_label slds-text-color_weak slds-truncate">Slack</dt>
+                    <dd class="slds-item_detail">{slackText}</dd>
+                    <dt class="slds-item_label slds-text-color_weak slds-truncate">AI pending / failed</dt>
+                    <dd class="slds-item_detail">{health.aiPending} / {health.aiFailed}</dd>
+                    <dt class="slds-item_label slds-text-color_weak slds-truncate">Assessments in error</dt>
+                    <dd class="slds-item_detail">{health.assessmentErrors}</dd>
+                    <dt class="slds-item_label slds-text-color_weak slds-truncate">Integration failures (24h)</dt>
+                    <dd class="slds-item_detail">{health.integrationFailures24h}</dd>
+                    <dt class="slds-item_label slds-text-color_weak slds-truncate">Last assessment</dt>
+                    <dd class="slds-item_detail">
+                        <template if:true={health.latestAssessed}><lightning-formatted-date-time value={health.latestAssessed} year="numeric" month="short" day="2-digit" hour="2-digit" minute="2-digit"></lightning-formatted-date-time></template>
+                        <template if:false={health.latestAssessed}>none yet</template>
+                    </dd>
+                </dl>
+                <template if:true={canExecute}>
+                    <lightning-button class="slds-m-top_small" label="Retry failed AI analyses" icon-name="utility:retry" onclick={handleRetry}></lightning-button>
+                </template>
+            </template>
+        </div>
+    </article>
+</template>

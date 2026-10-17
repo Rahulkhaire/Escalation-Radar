@@ -1,0 +1,20 @@
+# Salesforce CLI local state
+.sf/
+.sfdx/
+.localdevserver/
+# Node
+node_modules/
+npm-debug.log*
+# Local credentials / environment (never commit)
+.env
+*.key
+*.pem
+*.sfdx-auth-url
+authFile*.txt
+# Build output
+dist/*.zip
+dist/*.sha256
+coverage/
+.DS_Store
+.idea/
+.vscode/

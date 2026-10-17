@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomApplication xmlns="http://soap.sforce.com/2006/04/metadata">
+    <brand>
+        <headerColor>#0B2545</headerColor>
+        <shouldOverrideOrgTheme>false</shouldOverrideOrgTheme>
+    </brand>
+    <formFactors>Large</formFactors>
+    <isNavAutoTempTabsDisabled>false</isNavAutoTempTabsDisabled>
+    <isNavPersonalizationDisabled>false</isNavPersonalizationDisabled>
+    <label>Escalation Radar</label>
+    <navType>Standard</navType>
+    <tabs>ER_Dashboard</tabs>
+    <tabs>Risk_Assessment__c</tabs>
+    <tabs>Escalation_Action__c</tabs>
+    <tabs>Escalation_Audit__c</tabs>
+    <tabs>Integration_Log__c</tabs>
+    <uiType>Lightning</uiType>
+</CustomApplication>

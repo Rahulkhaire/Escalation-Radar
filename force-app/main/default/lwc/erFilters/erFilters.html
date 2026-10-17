@@ -1,0 +1,23 @@
+<template>
+    <div class="slds-grid slds-wrap slds-gutters_small slds-grid_vertical-align-end er-filters" role="search" aria-label="Case filters">
+        <div class="slds-col slds-size_1-of-1 slds-large-size_3-of-12">
+            <lightning-input type="search" label="Search" variant="label-hidden" placeholder="Case number, subject or customer" value={filters.searchText}
+                onchange={handleSearch} aria-label="Search by case number, subject or customer"></lightning-input>
+        </div>
+        <div class="slds-col slds-size_1-of-2 slds-large-size_2-of-12">
+            <lightning-combobox name="priority" label="Priority" options={priorityOptions} value={filters.priority} onchange={handleCombo}></lightning-combobox>
+        </div>
+        <div class="slds-col slds-size_1-of-2 slds-large-size_2-of-12">
+            <lightning-combobox name="caseStatus" label="Status" options={statusOptions} value={filters.caseStatus} onchange={handleCombo}></lightning-combobox>
+        </div>
+        <div class="slds-col slds-size_1-of-2 slds-large-size_2-of-12">
+            <lightning-combobox name="ownerId" label="Owner" options={ownerOptions} value={filters.ownerId} onchange={handleCombo}></lightning-combobox>
+        </div>
+        <div class="slds-col slds-size_1-of-2 slds-large-size_2-of-12">
+            <lightning-combobox name="category" label="Risk category" options={categoryOptions} value={filters.category} onchange={handleCombo}></lightning-combobox>
+        </div>
+        <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-12">
+            <lightning-button label="Reset" onclick={handleReset} class="slds-m-top_x-small"></lightning-button>
+        </div>
+    </div>
+</template>

@@ -1,0 +1,54 @@
+<template>
+    <article class="slds-card" aria-live="polite">
+        <div class="slds-card__header slds-grid slds-grid_align-spread">
+            <h2 class="slds-card__header-title slds-text-heading_small">
+                <template if:true={detail}>Case {detail.row.caseNumber}</template>
+                <template if:false={detail}>Case risk detail</template>
+            </h2>
+            <template if:true={detail}>
+                <lightning-button-icon icon-name="utility:close" variant="bare" alternative-text="Close details" onclick={handleClose}></lightning-button-icon>
+            </template>
+        </div>
+        <div class="slds-card__body slds-card__body_inner">
+            <template if:false={detail}>
+                <p class="slds-text-color_weak">Select a case and choose Details to see why it is rated at risk.</p>
+            </template>
+            <template if:true={detail}>
+                <p><strong>{detail.row.subject}</strong></p>
+                <p class="slds-text-body_small slds-text-color_weak">{detail.row.accountName} - {detail.row.priority} priority - owner {detail.row.ownerName}</p>
+                <p class="slds-m-top_x-small">
+                    <span class="er-score">{detail.row.score}</span> / 100
+                    <lightning-badge label={detail.row.category} class="slds-m-left_x-small"></lightning-badge>
+                </p>
+                <p class="slds-text-body_small slds-text-color_weak">
+                    Deterministic {detail.deterministicScore} + AI uplift {upliftValue} - rules v{detail.ruleVersion}
+                </p>
+                <h3 class="slds-text-heading_small slds-m-top_medium">Why this score (deterministic)</h3>
+                <ul>
+                    <template for:each={factors} for:item="f">
+                        <li key={f.key} class="slds-m-bottom_x-small">
+                            <div class="slds-grid slds-grid_align-spread">
+                                <span>{f.label}</span><span class="slds-text-title">{f.points} / {f.maxPoints} pts</span>
+                            </div>
+                            <div class="slds-progress-bar slds-progress-bar_small" role="progressbar" aria-valuemin="0" aria-valuemax="100"
+                                aria-valuenow={f.pct} aria-label={f.label}>
+                                <span class="slds-progress-bar__value" style={f.style}></span>
+                            </div>
+                            <p class="slds-text-body_small slds-text-color_weak">{f.detail}</p>
+                        </li>
+                    </template>
+                </ul>
+                <c-er-ai-panel detail={detail}></c-er-ai-panel>
+                <c-er-action-panel actions={detail.actions} can-approve={canApprove} can-execute={canExecute}
+                    onactionapprove={relay} onactionreject={relay} onactionrun={relay}></c-er-action-panel>
+                <div class="slds-m-top_medium">
+                    <lightning-button label="Open case record" icon-name="utility:new_window" onclick={handleOpen} class="slds-m-right_x-small"></lightning-button>
+                    <template if:true={canExecute}>
+                        <lightning-button label="Reassess now" icon-name="utility:refresh" onclick={handleReassess}></lightning-button>
+                    </template>
+                </div>
+                <c-er-audit-history entries={audit}></c-er-audit-history>
+            </template>
+        </div>
+    </article>
+</template>

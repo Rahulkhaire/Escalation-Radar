@@ -1,0 +1,19 @@
+<template>
+    <section class="slds-m-top_medium" aria-labelledby="aud-heading">
+        <h3 id="aud-heading" class="slds-text-heading_small">Audit history</h3>
+        <p class="slds-text-body_small slds-text-color_weak">Application-level audit trail (not tamper-evident).</p>
+        <template if:false={hasEntries}><p class="slds-text-color_weak" role="status">No audit entries yet.</p></template>
+        <ul class="slds-timeline">
+            <template for:each={rows} for:item="e">
+                <li key={e.id} class="slds-m-bottom_x-small">
+                    <p><strong>{e.eventType}</strong> <span class={e.outcomeClass}>{e.outcome}</span></p>
+                    <p class="slds-text-body_small slds-text-color_weak">
+                        <lightning-formatted-date-time value={e.createdDate} year="numeric" month="short" day="2-digit" hour="2-digit" minute="2-digit" second="2-digit"></lightning-formatted-date-time>
+                        <template if:true={e.correlationId}> - {e.correlationId}</template>
+                    </p>
+                    <template if:true={e.details}><p class="slds-text-body_small">{e.details}</p></template>
+                </li>
+            </template>
+        </ul>
+    </section>
+</template>

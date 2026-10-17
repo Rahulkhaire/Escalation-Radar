@@ -1,0 +1,1 @@
+{ "trailingComma": "none", "overrides": [ { "files": "**/*.{cls,trigger}", "options": { "parser": "apex" } } ] }

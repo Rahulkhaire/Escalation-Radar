@@ -1,0 +1,33 @@
+<template>
+    <section class="slds-m-top_medium" aria-labelledby="act-heading">
+        <h3 id="act-heading" class="slds-text-heading_small">Recommended actions</h3>
+        <template if:false={hasActions}>
+            <p class="slds-text-color_weak" role="status">No actions have been proposed for this case.</p>
+        </template>
+        <ul class="slds-has-dividers_bottom-space">
+            <template for:each={items} for:item="a">
+                <li key={a.id} class="slds-item">
+                    <p><strong>{a.typeLabel}</strong>
+                        <lightning-badge label={a.statusLabel} class="slds-m-left_x-small"></lightning-badge></p>
+                    <p class="slds-text-body_small">{a.reason}</p>
+                    <template if:true={a.draftText}>
+                        <p class="slds-text-body_small slds-text-color_weak er-pre">Draft: {a.draftText}</p>
+                    </template>
+                    <p class="slds-text-body_small slds-text-color_weak">
+                        Proposed at {a.categoryAtProposal} ({a.scoreAtProposal}) by {a.source}{a.requestedByText}
+                        <template if:true={a.failureDetails}> - {a.failureDetails}</template>
+                    </p>
+                    <div class="slds-m-top_x-small">
+                        <template if:true={a.canDecide}>
+                            <lightning-button variant="brand" label="Approve" data-id={a.id} onclick={handleApprove} class="slds-m-right_x-small"></lightning-button>
+                            <lightning-button label="Reject" data-id={a.id} onclick={handleReject}></lightning-button>
+                        </template>
+                        <template if:true={a.canRun}>
+                            <lightning-button variant="neutral" label="Run action" data-id={a.id} onclick={handleRun}></lightning-button>
+                        </template>
+                    </div>
+                </li>
+            </template>
+        </ul>
+    </section>
+</template>

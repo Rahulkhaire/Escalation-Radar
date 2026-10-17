@@ -1,0 +1,30 @@
+<template>
+    <article class="slds-card">
+        <div class="slds-card__header"><h2 class="slds-card__header-title slds-text-heading_small">Approval queue ({count})</h2></div>
+        <div class="slds-card__body slds-card__body_inner">
+            <template if:false={hasItems}>
+                <p class="slds-text-color_weak" role="status">Nothing is waiting for approval.</p>
+            </template>
+            <ul class="slds-has-dividers_bottom-space">
+                <template for:each={items} for:item="a">
+                    <li key={a.id} class="slds-item">
+                        <p><strong>{a.typeLabel}</strong> - Case {a.caseNumber}
+                            <lightning-badge label={a.categoryAtProposal} class="slds-m-left_x-small"></lightning-badge></p>
+                        <p class="slds-text-body_small">{a.reason}</p>
+                        <p class="slds-text-body_small slds-text-color_weak">Score at proposal {a.scoreAtProposal}; requested by {a.requestedBy}; source {a.source}</p>
+                        <template if:true={a.draftText}><p class="slds-text-body_small er-pre">{a.draftText}</p></template>
+                        <template if:true={canApprove}>
+                            <lightning-input type="text" label="Decision comment (optional)" data-comment={a.id} maxlength="255" class="slds-m-top_x-small"></lightning-input>
+                            <div class="slds-m-top_x-small">
+                                <lightning-button variant="brand" label="Approve" data-id={a.id} onclick={handleApprove} class="slds-m-right_x-small"></lightning-button>
+                                <lightning-button label="Reject" data-id={a.id} onclick={handleReject}></lightning-button>
+                                <lightning-button variant="base" label="Show case" data-case={a.caseId} onclick={handleShow} class="slds-m-left_x-small"></lightning-button>
+                            </div>
+                        </template>
+                        <template if:false={canApprove}><p class="slds-text-color_weak">You do not have the approver permission.</p></template>
+                    </li>
+                </template>
+            </ul>
+        </div>
+    </article>
+</template>

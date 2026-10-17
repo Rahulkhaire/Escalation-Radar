@@ -1,0 +1,1 @@
+{ "root": true, "extends": ["@salesforce/eslint-config-lwc/recommended"] }

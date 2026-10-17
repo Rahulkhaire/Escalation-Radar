@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>SLA_Ramp_Start_Pct__c</fullName>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <description>SLA consumption below this percentage contributes 0 points; ramps linearly to full weight at 100%.</description>
+    <label>SLA Ramp Start %</label>
+    <precision>5</precision>
+    <required>false</required>
+    <scale>1</scale>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Risk engine weights, thresholds and SLA policy. The record with DeveloperName Default is used.</description>
+    <label>ER Risk Config</label>
+    <pluralLabel>ER Risk Configs</pluralLabel>
+    <visibility>Public</visibility>
+</CustomObject>
