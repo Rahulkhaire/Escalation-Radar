@@ -493,23 +493,18 @@ Recommended validation areas include:
 - Permission and user-mode data access.
 - Dashboard loading, error, and stale-data behaviour.
 
+
 ## 🖼️ Screenshots
 
-**Screenshots are not available yet** because the dashboard has not been run in a Salesforce org. Add genuine screenshots after successful deployment and testing.
+### 📊 Dashboard Overview
+![Escalation Radar Dashboard](docs/screenshots/dashboard-overview.png)
 
-Suggested files:
+### 🔍 Case Detail & Risk Breakdown
+![Case Detail and Risk Breakdown](docs/screenshots/case-detail.png)
 
-| Screenshot | Suggested path |
-|---|---|
-| Dashboard overview | `docs/screenshots/dashboard-overview.png` |
-| Case detail and factor breakdown | `docs/screenshots/case-detail.png` |
-| Manager approval queue | `docs/screenshots/approval-queue.png` |
-
-When the images exist in the repository, embed them here, for example:
-
-```markdown
-![Dashboard overview](docs/screenshots/dashboard-overview.png)
-```
+### ✅ Manager Approval Queue
+![Manager Approval Queue](docs/screenshots/approval-queue.png)
+s
 
 ## 🚧 Implementation status and limitations
 
