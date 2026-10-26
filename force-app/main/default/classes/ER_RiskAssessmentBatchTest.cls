@@ -24,9 +24,9 @@ private class ER_RiskAssessmentBatchTest {
         configure();
         Account a = ER_TestDataFactory.account('ER Batch2', 'Strategic');
         List<Case> cs = ER_TestDataFactory.cases(3, a.Id, 'High', null);
-        Test.startTest();
-        Database.executeBatch(new ER_RiskAssessmentBatch(ER_RiskAssessmentBatch.MODE_REPROCESS, null), 50);
-        Test.stopTest();
+        for (Case c : cs) {
+            ER_TestDataFactory.assessment(c, 'LOW', 10, 'Scored');
+        }
         Test.startTest();
         Database.executeBatch(new ER_RiskAssessmentBatch(ER_RiskAssessmentBatch.MODE_REPROCESS, null), 50);
         Test.stopTest();

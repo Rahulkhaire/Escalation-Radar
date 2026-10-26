@@ -29,10 +29,10 @@ private class ER_AuditAndEventTest {
 
     @IsTest
     static void platformEventsArePublishedAfterCommit() {
-        Risk_Assessment__c ra = new Risk_Assessment__c(
-            Id = '000000000000000AAA', Case_Id__c = '500000000000001AAA', Risk_Score__c = 77.5, Risk_Category__c = 'CRITICAL',
-            Assessment_Status__c = 'Scored', Correlation_Id__c = 'ER-E1'
-        );
+        Account a = ER_TestDataFactory.account('ER Evt Test', 'Basic');
+        Case c = ER_TestDataFactory.cases(1, a.Id, 'Low', null)[0];
+        Risk_Assessment__c ra = ER_TestDataFactory.assessment(c, 'CRITICAL', 77.5, 'Scored');
+        ra.Correlation_Id__c = 'ER-E1';
         Test.startTest();
         Integer ok = ER_PlatformEventPublisher.publish(new List<Risk_Assessment__c>{ ra });
         Test.getEventBus().deliver();

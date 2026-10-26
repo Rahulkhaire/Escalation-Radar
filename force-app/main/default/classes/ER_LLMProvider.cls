@@ -1,11 +1,12 @@
 /**
- * LLM adapter using a Named Credential and a Messages-style JSON API (system prompt + one user message,
- * text content blocks in the response). The endpoint, model, timeout and payload limits come from
- * ER_Integration_Setting__mdt "AI". The API key lives in an External Credential / Named Credential,
- * never in code. Adjust buildBody/extractText if your provider's schema differs (see docs/API_AND_INTEGRATIONS.md).
+ * Real LLM adapter supporting the OpenAI API (and compatible JSON chat completion endpoints)
+ * using Salesforce Named Credentials and External Credentials.
+ * The endpoint, model, timeout and payload limits come from ER_Integration_Setting__mdt "AI".
+ * The API key lives securely in the External Credential / Named Credential, NEVER in code or metadata.
  *
- * Prompt-injection stance: case text is placed inside a delimited data block, the system prompt states it is
- * untrusted data, and the response is validated against a strict schema. Output is never executed.
+ * Prompt-injection containment: case text is placed inside a delimited data block, the system prompt
+ * marks it as UNTRUSTED CUSTOMER DATA, response_format requests JSON, and output is strictly validated.
+ * Model output is purely advisory and is NEVER directly executed.
  */
 public with sharing class ER_LLMProvider implements ER_AIProvider {
     private final ER_Config.IntegrationSetting setting;
@@ -35,15 +36,13 @@ public with sharing class ER_LLMProvider implements ER_AIProvider {
             throw new ER_IntegrationException('LLM provider is not configured (Named Credential or model missing).', false, null);
         }
         HttpRequest http = new HttpRequest();
-        http.setEndpoint('callout:' + setting.namedCredential + (setting.endpointPath == null ? '' : setting.endpointPath));
+        String path = String.isBlank(setting.endpointPath) ? '/v1/chat/completions' : setting.endpointPath;
+        http.setEndpoint('callout:' + setting.namedCredential + (path.startsWith('/') ? path : '/' + path));
         http.setMethod('POST');
         http.setTimeout(Math.min(Math.max(setting.timeoutMs, 1000), 120000));
         http.setHeader('Content-Type', 'application/json');
-        // Non-secret protocol header; the API key itself is injected by the External Credential.
-        http.setHeader('anthropic-version', '2023-06-01');
         http.setBody(buildBody(req));
 
-        Long started = System.currentTimeMillis();
         HttpResponse res;
         try {
             res = new Http().send(http);
@@ -51,16 +50,24 @@ public with sharing class ER_LLMProvider implements ER_AIProvider {
             throw new ER_IntegrationException('LLM callout failed: ' + e.getMessage(), true, null);
         }
         Integer code = res.getStatusCode();
+        String body = res.getBody();
         if (code == 429) {
-            throw new ER_IntegrationException('LLM rate limit reached (HTTP 429).', true, code);
+            String err = parseErrorMessage(body, code);
+            throw new ER_IntegrationException('LLM rate limit reached (HTTP 429): ' + err, true, code);
+        }
+        if (code == 401 || code == 403) {
+            String err = parseErrorMessage(body, code);
+            throw new ER_IntegrationException('LLM authentication failed (HTTP ' + code + '): ' + err + ' Check Named Credential / External Credential in Salesforce Setup.', false, code);
         }
         if (code >= 500) {
-            throw new ER_IntegrationException('LLM provider error (HTTP ' + code + ').', true, code);
+            String err = parseErrorMessage(body, code);
+            throw new ER_IntegrationException('LLM provider error (HTTP ' + code + '): ' + err, true, code);
         }
         if (code < 200 || code >= 300) {
-            throw new ER_IntegrationException('LLM request rejected (HTTP ' + code + ').', false, code);
+            String err = parseErrorMessage(body, code);
+            throw new ER_IntegrationException('LLM request rejected (HTTP ' + code + '): ' + err, false, code);
         }
-        String text = extractText(res.getBody());
+        String text = extractText(body);
         return ER_AIResponseValidator.parse(text, name());
     }
 
@@ -80,28 +87,90 @@ public with sharing class ER_LLMProvider implements ER_AIProvider {
         if (content.length() > setting.maxPayloadChars) {
             content = content.substring(0, setting.maxPayloadChars);
         }
-        return JSON.serialize(new Map<String, Object>{
-            'model' => setting.model,
-            'max_tokens' => setting.maxTokens,
-            'system' => SYSTEM_PROMPT,
-            'messages' => new List<Object>{ new Map<String, Object>{ 'role' => 'user', 'content' => content } }
-        });
+        String modelName = String.isBlank(setting.model) || setting.model == 'set-in-setup-before-using-LLM' ? 'gpt-4o-mini' : setting.model;
+        Integer maxTokens = setting.maxTokens == null || setting.maxTokens <= 0 ? 800 : setting.maxTokens;
+
+        List<Map<String, String>> messages = new List<Map<String, String>>{
+            new Map<String, String>{ 'role' => 'system', 'content' => SYSTEM_PROMPT },
+            new Map<String, String>{ 'role' => 'user', 'content' => content }
+        };
+
+        Map<String, Object> payload = new Map<String, Object>{
+            'model' => modelName,
+            'messages' => messages,
+            'max_tokens' => maxTokens,
+            'temperature' => 0.2,
+            'response_format' => new Map<String, String>{ 'type' => 'json_object' }
+        };
+        return JSON.serialize(payload);
     }
 
     @TestVisible
     private static String extractText(String body) {
+        if (String.isBlank(body)) {
+            throw new ER_AIValidationException('LLM response was empty.');
+        }
         try {
             Map<String, Object> m = (Map<String, Object>) JSON.deserializeUntyped(body);
-            List<Object> blocks = (List<Object>) m.get('content');
-            if (blocks == null || blocks.isEmpty()) {
-                throw new ER_AIValidationException('LLM response contained no content.');
+            // 1. OpenAI Chat Completions schema: choices[0].message.content
+            if (m.containsKey('choices')) {
+                List<Object> choices = (List<Object>) m.get('choices');
+                if (choices != null && !choices.isEmpty()) {
+                    Map<String, Object> firstChoice = (Map<String, Object>) choices[0];
+                    if (firstChoice != null && firstChoice.containsKey('message')) {
+                        Map<String, Object> message = (Map<String, Object>) firstChoice.get('message');
+                        if (message != null && message.containsKey('content')) {
+                            String content = (String) message.get('content');
+                            if (String.isNotBlank(content)) {
+                                return content;
+                            }
+                        }
+                    }
+                }
             }
-            Map<String, Object> first = (Map<String, Object>) blocks[0];
-            return (String) first.get('text');
+            // 2. Anthropic Messages schema fallback: content[0].text
+            if (m.containsKey('content') && (m.get('content') instanceof List<Object>)) {
+                List<Object> blocks = (List<Object>) m.get('content');
+                if (blocks != null && !blocks.isEmpty()) {
+                    Map<String, Object> first = (Map<String, Object>) blocks[0];
+                    if (first != null && first.containsKey('text')) {
+                        return (String) first.get('text');
+                    }
+                }
+            }
+            // 3. Direct JSON object if model returned raw JSON without wrapper
+            if (m.containsKey('summary') && m.containsKey('urgency')) {
+                return body;
+            }
+            throw new ER_AIValidationException('LLM response contained no recognised content choices.');
         } catch (ER_AIValidationException e) {
             throw e;
         } catch (Exception e) {
             throw new ER_AIValidationException('LLM response envelope was malformed.');
         }
+    }
+
+    @TestVisible
+    private static String parseErrorMessage(String body, Integer statusCode) {
+        if (String.isBlank(body)) {
+            return 'HTTP ' + statusCode;
+        }
+        try {
+            Map<String, Object> m = (Map<String, Object>) JSON.deserializeUntyped(body);
+            if (m.containsKey('error')) {
+                Object errObj = m.get('error');
+                if (errObj instanceof Map<String, Object>) {
+                    Map<String, Object> errMap = (Map<String, Object>) errObj;
+                    if (errMap.containsKey('message')) {
+                        return ER_AuditService.truncate(String.valueOf(errMap.get('message')), 250);
+                    }
+                } else if (errObj instanceof String) {
+                    return ER_AuditService.truncate((String) errObj, 250);
+                }
+            }
+        } catch (Exception e) {
+            // Not JSON error body
+        }
+        return ER_AuditService.truncate(body, 250);
     }
 }

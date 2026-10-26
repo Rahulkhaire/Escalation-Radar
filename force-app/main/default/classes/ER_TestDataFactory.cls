@@ -14,8 +14,8 @@ public class ER_TestDataFactory {
         s.enabled = enabled;
         s.provider = provider;
         s.namedCredential = 'ER_LLM_Test';
-        s.endpointPath = '/v1/messages';
-        s.model = 'test-model';
+        s.endpointPath = '/v1/chat/completions';
+        s.model = 'gpt-4o-mini';
         s.timeoutMs = 5000;
         s.maxPayloadChars = 6000;
         s.maxRetries = 3;
@@ -77,7 +77,10 @@ public class ER_TestDataFactory {
     /** Assigns a permission set that ships with this project (also exercises its FLS and custom permissions). Call inside System.runAs. */
     public static void assignPermissionSet(Id userId, String permissionSetName) {
         PermissionSet ps = [SELECT Id FROM PermissionSet WHERE Name = :permissionSetName LIMIT 1];
-        insert new PermissionSetAssignment(AssigneeId = userId, PermissionSetId = ps.Id);
+        List<PermissionSetAssignment> existing = [SELECT Id FROM PermissionSetAssignment WHERE AssigneeId = :userId AND PermissionSetId = :ps.Id LIMIT 1];
+        if (existing.isEmpty()) {
+            insert new PermissionSetAssignment(AssigneeId = userId, PermissionSetId = ps.Id);
+        }
     }
 
     public static Risk_Assessment__c assessment(Case c, String category, Decimal score, String status) {

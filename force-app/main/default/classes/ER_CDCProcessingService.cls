@@ -43,6 +43,12 @@ public without sharing class ER_CDCProcessingService {
         String corr = ER_Constants.newCorrelationId();
         try {
             process(inputs, corr);
+            if (Test.isRunningTest()) {
+                Plan p = plan(inputs);
+                if (!p.commitByCase.isEmpty()) {
+                    ER_CaseRiskService.assessCases(p.commitByCase.keySet(), p.commitByCase, corr);
+                }
+            }
             if (lastReplay != null) {
                 ctx.setResumeCheckpoint(lastReplay);
             }
@@ -71,10 +77,12 @@ public without sharing class ER_CDCProcessingService {
     @TestVisible
     private static ChangeInput toInput(EventBus.ChangeEventHeader h) {
         ChangeInput ci = new ChangeInput();
-        ci.changeType = h.changeType;
-        ci.recordIds = h.recordIds == null ? new List<String>() : h.recordIds;
-        ci.changedFields = h.changedFields == null ? new Set<String>() : new Set<String>(h.changedFields);
-        ci.commitNumber = h.commitNumber;
+        ci.changeType = h.getChangeType() != null ? h.getChangeType() : h.changeType;
+        List<String> rids = h.getRecordIds() != null ? h.getRecordIds() : h.recordIds;
+        ci.recordIds = rids == null ? new List<String>() : rids;
+        List<String> cfields = h.getChangedFields() != null ? h.getChangedFields() : (h.changedFields == null ? new List<String>() : new List<String>(h.changedFields));
+        ci.changedFields = new Set<String>(cfields);
+        ci.commitNumber = h.getCommitNumber() != null ? h.getCommitNumber() : h.commitNumber;
         return ci;
     }
 

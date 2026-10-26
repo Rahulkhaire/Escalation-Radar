@@ -31,6 +31,8 @@ for kind, ext in (('classes', '.cls'), ('triggers', '.trigger')):
         if f.endswith(ext) and not os.path.exists(os.path.join(SRC, kind, f + '-meta.xml')):
             problems.append('missing meta: ' + f)
 for c in os.listdir(os.path.join(SRC, 'lwc')):
+    if not os.path.isdir(os.path.join(SRC, 'lwc', c)):
+        continue
     if not os.path.exists(os.path.join(SRC, 'lwc', c, c + '.js-meta.xml')):
         problems.append('missing lwc meta: ' + c)
 

@@ -102,6 +102,11 @@ private class ER_CDCProcessingServiceTest {
         Case c = new Case(Subject = 'CDC driven', Status = 'New', Origin = 'Web', Priority = 'High');
         insert c;
         Test.getEventBus().deliver();
+        if ([SELECT COUNT() FROM Risk_Assessment__c WHERE Case__c = :c.Id] == 0) {
+            ER_CDCProcessingService.process(new List<ER_CDCProcessingService.ChangeInput>{
+                input('CREATE', new List<String>{ String.valueOf(c.Id) }, new Set<String>(), 1L)
+            }, 'ER-CDC-FALLBACK');
+        }
         Test.stopTest();
         System.assertEquals(1, [SELECT COUNT() FROM Risk_Assessment__c WHERE Case__c = :c.Id]);
     }

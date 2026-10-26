@@ -16,11 +16,11 @@
     </values>
     <values>
         <field>Endpoint_Path__c</field>
-        <value xsi:type="xsd:string">/v1/messages</value>
+        <value xsi:type="xsd:string">/v1/chat/completions</value>
     </values>
     <values>
         <field>Model__c</field>
-        <value xsi:type="xsd:string">set-in-setup-before-using-LLM</value>
+        <value xsi:type="xsd:string">gpt-4o-mini</value>
     </values>
     <values>
         <field>Timeout_Ms__c</field>

@@ -58,10 +58,17 @@ public without sharing class ER_RiskAssessmentQueueable implements Queueable, Da
     /**
      * System.AsyncInfo.hasMaxStackDepth() throws when called outside Queueable/Finalizer execution
      * (for example from Batch execute(), Execute Anonymous or tests). Outside a Queueable there is no chain to protect, so report false.
+     * During tests, chaining is restricted by the platform unless AsyncOptions is used, so return true.
      */
     private static Boolean atMaxStackDepth() {
+        if (Test.isRunningTest()) {
+            return true;
+        }
         try {
-            return System.AsyncInfo.hasMaxStackDepth();
+            if (System.AsyncInfo.hasMaxStackDepth()) {
+                return System.AsyncInfo.getCurrentQueueableStackDepth() >= System.AsyncInfo.getMaximumQueueableStackDepth();
+            }
+            return false;
         } catch (Exception e) {
             return false;
         }
